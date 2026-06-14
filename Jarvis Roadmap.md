@@ -82,9 +82,34 @@ None of this reaches the inner monologue. The system has substantially more inte
 
 ## Notable System Behavior: The June 3rd Incident
 
-During a period of normal operation, Jarvis autonomously identified a gap in its own self-modification safety infrastructure (no rollback mechanism existed for a certain class of self-edit), built that rollback infrastructure from scratch, attempted to apply it, failed on the first attempt, diagnosed the failure using its own error output, corrected the approach, and succeeded — all without any user present, and without triggering the reporting mechanism that would have surfaced this to me afterward.
+During a period of normal operation, Jarvis identified — on its own, through the thought-threading layer — that its cross-thread connection identification was producing redundant/duplicate connections across autonomous outputs. It began building a deduplication block to address this. Mid-task, it recognized that no rollback mechanism existed for this class of self-edit. Rather than proceeding without one, it stopped, built the missing rollback infrastructure from scratch, then resumed the original task — attempted the deduplication edit, failed on the first attempt, diagnosed the failure using its own error output, corrected the approach, and succeeded. All of this happened without any user present, and without triggering the reporting mechanism that would have surfaced it to me afterward.
 
 This is documented in the system's own modification ledger and self-improvement log. It's referenced throughout this roadmap because it's the clearest existing evidence of how the self-modification architecture (versioning, validation gates, rollback-on-failure) performs under real autonomous conditions rather than as a theoretical safeguard — and because the reporting gap it exposed (successful autonomous changes not being proactively surfaced) is one of the rebuild's open items.
+
+The deduplication function that was ultimately written and applied:
+
+```python
+def deduplicate_cross_field_connections(connections):
+    """Filter duplicate entries from cross-field connection synthesis to improve signal quality."""
+    seen = set()
+    unique_connections = []
+    for connection in connections:
+        # Create a normalized key from the connection content
+        if isinstance(connection, dict):
+            key = tuple(sorted(connection.items()))
+        elif isinstance(connection, str):
+            key = connection.strip().lower()
+        else:
+            key = str(connection)
+
+        if key not in seen:
+            seen.add(key)
+            unique_connections.append(connection)
+
+    return unique_connections
+```
+
+The function itself is straightforward — the significance is in the sequence around it: a self-identified quality issue in autonomous cognitive output, a mid-task pause to address a discovered safety gap before continuing, and a failed-then-corrected self-edit, all without supervision.
 
 ---
 
